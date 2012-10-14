@@ -1,0 +1,7 @@
+name = "Fragreplace"
+description = "Demonstrates a menu item returning an HTML fragment rather than a
+ fully themed page"
+core = 7.x
+version = 7.x-1.0
+package = Other
+files[] = fragreplace.module

@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * Implements hook_menu()
+ */
+function fragreplace_menu() {
+  $items = array();
+
+  $items['fragreplace/page'] = array(
+    'title' => 'HTML Fragment replace page',
+    'page callback' => 'fragreplace_page',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['fragreplace/fragment'] = array(
+    'title' => '',
+    'page callback' => 'fragreplace_fragment',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Return a renderable array for a full page
+ */
+function fragreplace_page() {
+  drupal_add_js(drupal_get_path('module', 'fragreplace') . 
+    '/fragreplace.js', 'file');
+
+  $page = array();
+  $page['fragreplace_link'] = array(
+    '#weight' => -100,
+    '#markup' => l(t('Replace the form'), 'fragreplace/page', 
+      array('attributes' => array(
+        'id' => 'replace-form-link'
+      )
+    )),
+  );
+
+  $page['content'] = drupal_get_form('fragreplace_form');
+
+  return $page;
+}
+
+/**
+ * Return a fragment of HTML, a complete <form />
+ */
+function fragreplace_fragment() {
+  // Get an example form
+  $form = drupal_get_form('fragreplace_form');
+
+  // Explicitly set the form @action attribute
+  $form['#action'] = url('fragreplace/page');
+
+  // Return rendered HTML of the form
+  print drupal_render($form);
+  exit;
+}
+
+/**
+ * Simple HTML form using the Form API
+ */
+function fragreplace_form($form, &$form_state) {
+  $form['message'] = array(
+    '#markup' => t('This form was created on @time',
+      array('@time' => date('r', time()))),
+    '#prefix' => '<p>',
+    '#suffix' => '</p>',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Press me'),
+  );
+
+  return $form;
+}
+
+/**
+ * Handle simple form submission
+ */
+function fragreplace_form_submit($form, &$form_state) {
+  drupal_set_message(t('Form submitted'), 'status');
+}
