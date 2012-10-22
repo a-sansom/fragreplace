@@ -71,6 +71,14 @@ function fragreplace_form($form, &$form_state) {
     '#suffix' => '</p>',
   );
 
+  $form['validation'] = array(
+    '#type' => 'radios',
+    '#title' => t('Validate'),
+    '#default_value' => 1,
+    '#options' => array(0 => 'Pass validation', 1 => 'Fail validation'),
+    '#description' => t('Whether or not the form should pass validation'),
+  );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Press me'),
@@ -80,8 +88,18 @@ function fragreplace_form($form, &$form_state) {
 }
 
 /**
+ * Handle simple form validation
+ */
+function fragreplace_form_validate($form, &$form_state) {
+  if ($form_state['values']['validation'] == 1) {
+    form_set_error('', t('Form failed validation'));
+  }
+}
+
+/**
  * Handle simple form submission
  */
 function fragreplace_form_submit($form, &$form_state) {
-  drupal_set_message(t('Form submitted'), 'status');
+  drupal_set_message(t('Form submitted at @time', 
+      array('@time' => date('r', time()))), 'status');
 }
